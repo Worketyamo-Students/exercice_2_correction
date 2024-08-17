@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model employes {
+  employeID    String          @id @default(auto()) @map("_id") @db.ObjectId
+  nom          String
+  email        String          @unique
+  password     String
+  poste        String
+  salaire      Int
+  presenceIDs  String[]        @db.ObjectId
+  presence     presences[]     @relation(fields: [presenceIDs], references: [presenceID])
+  absenceIDs   String[]        @db.ObjectId
+  absence      absences[]      @relation(fields: [absenceIDs], references: [absencesID])
+  notifiIDs    String[]        @db.ObjectId
+  notification notifications[] @relation(fields: [notifiIDs], references: [notificationID])
+}
+
+model presences {
+  presenceID String     @id @default(auto()) @map("_id") @db.ObjectId
+  date       DateTime
+  heureDebut DateTime
+  heureFin   DateTime? 
+  employeIDs String[]   @db.ObjectId
+  employes   employes[] @relation(fields: [employeIDs], references: [employeID])
+  estpresent Boolean @default(false)
+  // absence    absences   @relation(fields: [absencesId], references: [absencesID])
+  // absencesId String     @unique @db.ObjectId
+}
+
+model absences {
+  absencesID    String         @id @default(auto()) @map("_id") @db.ObjectId
+  date          DateTime
+  heureAbsences Int 
+  employeIDs    String[]       @db.ObjectId
+  employes      employes[]     @relation(fields: [employeIDs], references: [employeID])
+  // presence      presences?
+  notifictaion  notifications?
+}
+
+model notifications {
+  notificationID String     @id @default(auto()) @map("_id") @db.ObjectId
+  message        String
+  heureEnvoie    DateTime
+  absence        absences   @relation(fields: [absencesId], references: [absencesID])
+  absencesId     String     @unique @db.ObjectId
+  employeIDs     String[]   @db.ObjectId
+  employes       employes[] @relation(fields: [employeIDs], references: [employeID])
+}
+
