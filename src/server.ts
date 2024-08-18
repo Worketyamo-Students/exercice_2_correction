@@ -12,6 +12,7 @@ import {
 } from './core/constants';
 import routeEmploye from './routes/Employe.routes';
 import routePresence from './routes/Presence.routes';
+import routeSalaire from './routes/Salaire.routes';
 import { setupSwagger } from './swagger';
 
 const app = express();
@@ -27,7 +28,8 @@ app.use(
 );
 app.use(cookieParser());
 app.use(morgan('combined'));
-app.use('/employees', routeEmploye)
-app.use("/attendance",routePresence)
+app.use('/employees', routeEmploye);
+app.use("/attendance",routePresence);
+app.use("/salary",routeSalaire);
 setupSwagger(app);
 export default app;
